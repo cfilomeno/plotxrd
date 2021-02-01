@@ -57,7 +57,7 @@ def upload_file():
 #                            script=script, div1=div1)
 
 
-@app.route('/site2/<filename>')
+@app.route('/<filename>')
 def uploaded_file(filename):
     filepath = os.path.join(app.config['UPLOAD_FOLDER'], filename)
 
@@ -86,7 +86,7 @@ def uploaded_file(filename):
                background_fill_color=None, x_range=(df['Angle'].iloc[0], df['Angle'].iloc[-1]))
 
     p.add_tools(BoxSelectTool(dimensions='width'))
-    p.add_tools(CustomAction(icon="/home/cleber/Documentos/GitHub/fitdrx/site2/static/icon.png",
+    p.add_tools(CustomAction(icon="/home/cleber/Documentos/GitHub/plotxrd/static/icon.png",
                              callback=CustomJS(code='alert("foo")')))
     legend = filename[0:-4]
 
@@ -116,7 +116,7 @@ def uploaded_file(filename):
     return render_template('page2.html', script=script, div0=divs[0], div1=divs[1])
 
 
-@app.route('/site2/<filename>/fit')
+@app.route('/<filename>/fit')
 def fit(filename):
     def pvoigt(x, A, mu, sigma, alpha, K):
         sigmag = sigma * math.sqrt(2 * math.log(2))
@@ -150,9 +150,9 @@ def fit(filename):
                background_fill_color=None, x_range=(df['Angle'].iloc[0], df['Angle'].iloc[-1]))
 
     p.add_tools(BoxSelectTool(dimensions='width'))
-    p.add_tools(CustomAction(icon="/home/cleber/Documentos/GitHub/fitdrx/site2/static/icon.png",
+    p.add_tools(CustomAction(icon="/home/cleber/Documentos/GitHub/plotxrd/static/icon.png",
                              callback=CustomJS(code='alert("foo")')))
-    legend = filename[0:-4]
+    # legend = filename[0:-4]
 
     # p.scatter('Angle', 'Det1Disc1', source=source, legend_label=legend, color='red', size=0.2, alpha=0)
     # p.line('Angle', 'Det1Disc1', source=source, legend_label=legend, line_color='#0020C2')
