@@ -159,30 +159,31 @@ def fit(filename):
     p.yaxis.axis_label = 'I (U.A.)'
     p.xaxis.axis_label = '2-theta (degree)'
 
-    guess = [max(df['Det1Disc1']), np.mean(df['Angle']), 0.5, 0, min(df['Det1Disc1'])]
+    point_a = 35
+    point_b = 36
 
-    n = len(df['Angle'])
-    ponto_a = 32
-    ponto_b = 39
-    # n = 0
+    afit = df[(df['Angle'] >= point_a) & (df['Angle'] <= point_b)]
+    afit.reset_index(drop=True, inplace=True)
+
+    guess = [max(afit['Det1Disc1']), np.mean(afit['Angle']), 0.5, 0, min(afit['Det1Disc1'])]
+
+    n = len(afit['Angle'])
     y = np.empty(n)
-    # for i in range(n):
-    #     y[i] = pvoigt(df['Angle'][i], guess[0], guess[1], guess[2], guess[3], guess[4])
-    #
-    # # p.scatter(df['Angle'], df['Int'])
-    # p.line(df['Angle'], y, 'r')
 
-    a = df['Angle'].values
-    s = df['Det1Disc1'].values
+    for i in range(n):
+        y[i] = pvoigt(afit['Angle'][i], guess[0], guess[1], guess[2], guess[3], guess[4])
+
+    a = afit['Angle'].values
+    s = afit['Det1Disc1'].values
     c, cov = curve_fit(pvoigt, a, s, guess)
 
     for i in range(n):
-        y[i] = pvoigt(df['Angle'][i], c[0], c[1], c[2], c[3], c[4])
+        y[i] = pvoigt(afit['Angle'][i], c[0], c[1], c[2], c[3], c[4])
 
     # plt.scatter(df['Angle'], df['Int'], alpha=0.5, color='black')
     # p.line('Angle', y, legend_label='Cu2teste', line_color='red')
     plt.scatter(df['Angle'], df['Det1Disc1'])
-    plt.plot(df['Angle'], y, 'r')
+    plt.plot(afit['Angle'], y, 'r')
     generatedfilename = 'plot_' + filename + '.png'
     plt.savefig(os.path.join('static', generatedfilename))
     return render_template('page3.html', value=generatedfilename, amp=c[0], media=c[1], sigma=c[2], alpha=c[3], offset=c[4])
