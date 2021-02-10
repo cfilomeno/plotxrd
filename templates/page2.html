@@ -2,28 +2,41 @@
 
 {% block content %}
 
-    <script src="https://cdn.bokeh.org/bokeh/release/bokeh-2.2.3.min.js"></script>
-    <script src="https://cdn.bokeh.org/bokeh/release/bokeh-widgets-2.2.3.min.js"></script>
+<!--    <script src="https://cdn.bokeh.org/bokeh/release/bokeh-2.2.3.min.js"></script>-->
+<!--    <script src="https://cdn.bokeh.org/bokeh/release/bokeh-widgets-2.2.3.min.js"></script>-->
 
 
-    <div style="position: absolute; top: 80px; right: 10%;">
-        <section style="background: white; border-radius: 10px; padding: 15px; width: 400px; margin: auto;
-        box-shadow: 5px 5px 10px rgba(77, 51, 51, 0.521); ">
-             Ponto A: <input type="number" name="ponto_a" id="ponto_a" min="0" max="200"><br><br>
-             Ponto B: <input type="number" name="ponto_b" id="ponto_b" min="0" max="200"><br>
-        </section>
-        <br><button type="button" class="btn btn-primary" onClick="parent.location='/page3.html'">FIT</button>
+<!--    <div style="position: absolute; top: 80px; right: 10%;">-->
+<!--        <section style="background: white; border-radius: 10px; padding: 15px; width: 400px; margin: auto;-->
+<!--        box-shadow: 5px 5px 10px rgba(77, 51, 51, 0.521); ">-->
+<!--             Ponto A: <input type="number" name="ponto_a" id="ponto_a" min="0" max="200"><br><br>-->
+<!--             Ponto B: <input type="number" name="ponto_b" id="ponto_b" min="0" max="200"><br>-->
+<!--        </section>-->
+<!--        <br><button type="button" class="btn btn-primary" onClick="parent.location='/page3.html'">FIT</button>-->
 
 
-    </div>
+<!--    </div>-->
+
+
     <div style="position: relative">
 
-        {{ div0 | safe }}
-        {{ div1 | safe }}
+        <img src="{{url_for('static', filename=plot)}}" width = "1000">
+
     </div>
 
 
-        {{ script | safe }}
+
+
+
+
+<!--    <div style="position: relative">-->
+
+<!--         div0 | safe -->
+<!--         div1 | safe -->
+<!--    </div>-->
+
+
+<!--         script | safe -->
 
 
 

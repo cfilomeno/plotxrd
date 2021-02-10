@@ -1,10 +1,12 @@
 import os
 import pandas as pd
 import math
+import matplotlib
+matplotlib.use('Agg')
 import matplotlib.pyplot as plt
 import numpy as np
 from scipy.optimize import curve_fit
-from flask import Flask, request, redirect, url_for, render_template, send_from_directory
+from flask import Flask, request, redirect, url_for, render_template, send_from_directory, cli
 from werkzeug.utils import secure_filename
 import json
 import jinja2
@@ -80,40 +82,47 @@ def uploaded_file(filename):
     df.dropna(axis=1, inplace=True)
     source = ColumnDataSource(df)
 
-    p = figure(plot_height=700, plot_width=1000, toolbar_location="right", tools="save,xwheel_zoom,"
-                                                                                 ",reset,crosshair",
-               x_axis_type="linear", x_axis_location="below",
-               background_fill_color=None, x_range=(df['Angle'].iloc[0], df['Angle'].iloc[-1]))
+    plt.figure(figsize=(10, 8), dpi=100)
+    plt.plot(df['Angle'], df['Det1Disc1'], label=filename[0:-4])
+    plt.legend(loc='upper left')
+    generatedfilename = 'plot_' + filename[0:-4] + '.png'
+    plt.savefig(os.path.join('static', generatedfilename))
 
-    p.add_tools(BoxSelectTool(dimensions='width'))
-    p.add_tools(CustomAction(icon="/home/cleber/Documentos/GitHub/plotxrd/static/icon.png",
-                             callback=CustomJS(code='alert("foo")')))
-    legend = filename[0:-4]
+    # p = figure(plot_height=700, plot_width=1000, toolbar_location="right", tools="save,xwheel_zoom,"
+    #                                                                              ",reset,crosshair",
+    #            x_axis_type="linear", x_axis_location="below",
+    #            background_fill_color=None, x_range=(df['Angle'].iloc[0], df['Angle'].iloc[-1]))
+    #
+    # p.add_tools(BoxSelectTool(dimensions='width'))
+    # p.add_tools(CustomAction(icon="/home/cleber/Documentos/gitHub/plotxrd/static/icon.png",
+    #                          callback=CustomJS(code='alert("foo")')))
+    # legend = filename[0:-4]
+    #
+    # p.scatter('Angle', 'Det1Disc1', source=source, legend_label=legend, color='red', size=0.2, alpha=0)
+    # p.line('Angle', 'Det1Disc1', source=source, legend_label=legend, line_color='#0020C2')
+    # p.yaxis.axis_label = 'I (U.A.)'
+    # p.xaxis.axis_label = '2-theta (degree)'
+    # # button = Button(label='FIT', aspect_ratio=10, background='red',
+    # #                 align='center', button_type='primary',
+    # #                 width_policy='max')
+    #
+    # select = figure(title='Selecionar pico',
+    #                 plot_height=110, plot_width=1030, y_range=p.y_range,
+    #                 x_axis_type="linear", y_axis_type=None,
+    #                 tools="", toolbar_location=None, background_fill_color="#efefef")
+    # range_tool = RangeTool(x_range=p.x_range)
+    # range_tool.overlay.fill_color = "navy"
+    # range_tool.overlay.fill_alpha = 0.2
+    # select.line('Angle', 'Det1Disc1', source=df)
+    # select.ygrid.grid_line_color = None
+    # select.xgrid.grid_line_color = None
+    # select.add_tools(range_tool)
+    # select.toolbar.active_multi = range_tool
 
-    p.scatter('Angle', 'Det1Disc1', source=source, legend_label=legend, color='red', size=0.2, alpha=0)
-    p.line('Angle', 'Det1Disc1', source=source, legend_label=legend, line_color='#0020C2')
-    p.yaxis.axis_label = 'I (U.A.)'
-    p.xaxis.axis_label = '2-theta (degree)'
-    # button = Button(label='FIT', aspect_ratio=10, background='red',
-    #                 align='center', button_type='primary',
-    #                 width_policy='max')
+    # script, divs = components((p, select))
 
-    select = figure(title='Selecionar pico',
-                    plot_height=110, plot_width=1030, y_range=p.y_range,
-                    x_axis_type="linear", y_axis_type=None,
-                    tools="", toolbar_location=None, background_fill_color="#efefef")
-    range_tool = RangeTool(x_range=p.x_range)
-    range_tool.overlay.fill_color = "navy"
-    range_tool.overlay.fill_alpha = 0.2
-    select.line('Angle', 'Det1Disc1', source=df)
-    select.ygrid.grid_line_color = None
-    select.xgrid.grid_line_color = None
-    select.add_tools(range_tool)
-    select.toolbar.active_multi = range_tool
-
-    script, divs = components((p, select))
-
-    return render_template('page2.html', script=script, div0=divs[0], div1=divs[1])
+    return render_template('page2.html', plot=generatedfilename)
+    # , script=script, div0=divs[0], div1=divs[1])
 
 
 @app.route('/<filename>/fit')
@@ -144,23 +153,23 @@ def fit(filename):
     df.dropna(axis=1, inplace=True)
     source = ColumnDataSource(df)
 
-    p = figure(plot_height=700, plot_width=1000, toolbar_location="right", tools="save,xwheel_zoom,"
-                                                                                 ",reset,crosshair",
-               x_axis_type="linear", x_axis_location="below",
-               background_fill_color=None, x_range=(df['Angle'].iloc[0], df['Angle'].iloc[-1]))
+    # p = figure(plot_height=700, plot_width=1000, toolbar_location="right", tools="save,xwheel_zoom,"
+    #                                                                              ",reset,crosshair",
+    #            x_axis_type="linear", x_axis_location="below",
+    #            background_fill_color=None, x_range=(df['Angle'].iloc[0], df['Angle'].iloc[-1]))
+    #
+    # p.add_tools(BoxSelectTool(dimensions='width'))
+    # p.add_tools(CustomAction(icon="/home/cleber/Documentos/gitHub/plotxrd/static/icon.png",
+    #                          callback=CustomJS(code='alert("foo")')))
+    # # legend = filename[0:-4]
+    #
+    # # p.scatter('Angle', 'Det1Disc1', source=source, legend_label=legend, color='red', size=0.2, alpha=0)
+    # # p.line('Angle', 'Det1Disc1', source=source, legend_label=legend, line_color='#0020C2')
+    # p.yaxis.axis_label = 'I (U.A.)'
+    # p.xaxis.axis_label = '2-theta (degree)'
 
-    p.add_tools(BoxSelectTool(dimensions='width'))
-    p.add_tools(CustomAction(icon="/home/cleber/Documentos/GitHub/plotxrd/static/icon.png",
-                             callback=CustomJS(code='alert("foo")')))
-    # legend = filename[0:-4]
-
-    # p.scatter('Angle', 'Det1Disc1', source=source, legend_label=legend, color='red', size=0.2, alpha=0)
-    # p.line('Angle', 'Det1Disc1', source=source, legend_label=legend, line_color='#0020C2')
-    p.yaxis.axis_label = 'I (U.A.)'
-    p.xaxis.axis_label = '2-theta (degree)'
-
-    point_a = 35
-    point_b = 36
+    point_a = 60
+    point_b = 65
 
     afit = df[(df['Angle'] >= point_a) & (df['Angle'] <= point_b)]
     afit.reset_index(drop=True, inplace=True)
@@ -182,11 +191,22 @@ def fit(filename):
 
     # plt.scatter(df['Angle'], df['Int'], alpha=0.5, color='black')
     # p.line('Angle', y, legend_label='Cu2teste', line_color='red')
-    plt.scatter(df['Angle'], df['Det1Disc1'])
+    plt.plot(df['Angle'], df['Det1Disc1'], label=filename[0:-4], marker=',')
     plt.plot(afit['Angle'], y, 'r')
-    generatedfilename = 'plot_' + filename + '.png'
+    textstr = '\n'.join((
+        r'A = %.2f' % (c[0],),
+        r'$\mu$ = %.2f' % (c[1],),
+        r'$\sigma$ = %.2f' % (c[2],),
+        r'$\alpha$ = %.2f' % (c[3],),
+        r'offset = %.2f' % (c[4],)))
+
+    plt.legend()
+    pos_x = max(df['Angle'])*0.8
+    pos_y = max(df['Det1Disc1'])*0.7
+    plt.text(pos_x, pos_y, textstr, fontsize=10)
+    generatedfilename = 'fit_' + filename[0:-4] + '.png'
     plt.savefig(os.path.join('static', generatedfilename))
-    return render_template('page3.html', value=generatedfilename, amp=c[0], media=c[1], sigma=c[2], alpha=c[3], offset=c[4])
+    return render_template('page3.html', fit=generatedfilename, amp=c[0], media=c[1], sigma=c[2], alpha=c[3], offset=c[4])
 
     # script, div = components(p)
 
